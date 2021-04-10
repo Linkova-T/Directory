@@ -4,43 +4,13 @@
 #include <iostream>
 #include <vector>
 
-/*auto compute_file_size(const std::filesystem::path& path)
+template <typename T>
+std::time_t to_time_t(T type)
 {
-	if (std::filesystem::exists(path) && std::filesystem::is_regular_file(path))
-	{
-		auto file_size = std::filesystem::file_size(path);
-
-		if (file_size != static_cast <uintmax_t> (-1))
-		{
-			return file_size;
-		}
-	}
-
-	return static_cast <uintmax_t> (-1);
+	using namespace std::chrono;
+	auto sctp = time_point_cast<system_clock::duration>(type - T::clock::now() + system_clock::now());
+	return system_clock::to_time_t(sctp);
 }
-
-auto compute_directory_size(const std::filesystem::path& path)
-{
-	uintmax_t size = 0ULL;
-
-	if (std::filesystem::exists(path) && std::filesystem::is_directory(path))
-	{
-		for (auto const& entry : std::filesystem::recursive_directory_iterator(path))
-		{
-			if (std::filesystem::is_regular_file(entry.status()) || std::filesystem::is_symlink(entry.status()))
-			{
-				auto file_size = std::filesystem::file_size(entry);
-
-				if (file_size != static_cast <uintmax_t> (-1))
-				{
-					size += file_size;
-				}
-			}
-		}
-	}
-
-	return size;
-}*/
 
 void view_directory(const std::filesystem::path& path)
 {
@@ -51,10 +21,26 @@ void view_directory(const std::filesystem::path& path)
 			auto file_name = a.path().filename().string();
 			std::cout << "File name: ";
 			std::cout << file_name << std::endl;
+			std::reverse(file_name.begin(), file_name.end());
+			int i = 0;
+			bool flag = 1;
+			std::string type;
+			while (flag)
+			{
+				type.push_back(file_name[i]);
+				i = i + 1;
+				std::string r = ".";
+				if (file_name[i] == r[0]) {
+					flag = 0;
+				}
+			}
+			std::reverse(type.begin(), type.end());
 			std::cout << "File type: ";
-			/*for (int i = 0; i<3; i++ )
-			std::cout << std::vector<int> = std::filesystem::last_write_time(path);
-			std::cout << "Last modified: ";*/
+			std::cout << type << "\n";
+			auto ftime = std::filesystem::last_write_time(a);
+			std::time_t cftime = to_time_t(ftime);
+			std::cout << "Last modified: ";
+			std::cout << std::asctime(std::localtime(&cftime)) << "\n";
 		}
 	}
 }
@@ -66,7 +52,6 @@ int main()
 	path = "C:\\Тест";
 	std::cout << "Enter directory\n";
 	//std::cin >> path;
-	
 	view_directory(path);
 	return 0;
 }
