@@ -61,9 +61,11 @@ void view_directory(const std::filesystem::path& path)
 
 int main()
 {
+	setlocale(LC_ALL, "Russian");
 	std::filesystem::path path;
+	path = "C:\\Тест";
 	std::cout << "Enter directory\n";
-	std::cin >> path;
+	//std::cin >> path;
 	
 	view_directory(path);
 	return 0;
